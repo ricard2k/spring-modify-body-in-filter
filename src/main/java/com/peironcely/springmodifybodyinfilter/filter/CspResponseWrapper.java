@@ -1,20 +1,24 @@
 package com.peironcely.springmodifybodyinfilter.filter;
 
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-public class FakeResponseWrapper extends HttpServletResponseWrapper {
+public class CspResponseWrapper extends HttpServletResponseWrapper {
 
-    private final FakeServletOutputStream out;
+    private final CspServletOutputStream out;
     private final PrintWriter writer;
 
-    public FakeResponseWrapper(HttpServletResponse response) {
+    public CspResponseWrapper(@Nonnull HttpServletResponse response, @Nonnull String nonceValue) {
         super(response);
-        out = new FakeServletOutputStream();
+        final Charset charset = Charset.forName(response.getCharacterEncoding() == null? StandardCharsets.UTF_8.name() : response.getCharacterEncoding());
+        out = new CspServletOutputStream(nonceValue, charset);
         writer = new PrintWriter(out);
     }
 
@@ -30,6 +34,6 @@ public class FakeResponseWrapper extends HttpServletResponseWrapper {
 
     protected byte[] getBody() {
         writer.flush();
-        return this.out.getBuffer().toByteArray();
+        return this.out.toByteArray();
     }
 }
