@@ -20,6 +20,7 @@ public class CspServletOutputStream extends ServletOutputStream {
     public CspServletOutputStream(@Nonnull String nonceValue, @Nonnull Charset charset) {
         this.nonceTag = "nonce='%s'".formatted(nonceValue);
         if ("a".getBytes(charset).length>1) {throw new IllegalArgumentException("Multi-byte charset not supported");}
+        if ("<".getBytes(charset)[0] != '<') {throw new IllegalArgumentException("Character sets not ASCII based are not Supported");}
         this.charset = charset;
     }
 
