@@ -42,6 +42,7 @@ public class CspServletOutputStream extends ServletOutputStream {
         writeListener.onWritePossible();
     }
 
+    //copied from ByteArrayOutputStream
     private void ensureCapacity(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = buf.length;
@@ -51,9 +52,10 @@ public class CspServletOutputStream extends ServletOutputStream {
         }
     }
 
+    //nearly copied from jdk.internal.util.ArraysSupport
     public static int newLength(int oldLength, int minGrowth, int prefGrowth) {
         int prefLength = oldLength + Math.max(minGrowth, prefGrowth); // might overflow
-        if (0 < prefLength && prefLength <= Integer.MAX_VALUE-8) {
+        if ((0 < prefLength) && (prefLength <= (Integer.MAX_VALUE-8))) {
             return prefLength;
         } else {
             throw new OutOfMemoryError( "Required array length " + oldLength + " + " + minGrowth + " is too large");
